@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - `parse_big_decimal` bloblang method for Kafka Connect / Debezium decimal decoding @aratz-lasa
+- `openshift_oc` input component for collecting resources from OpenShift/Kubernetes clusters via the `oc` CLI
+- `vcenter` input component for collecting inventory objects from VMware vCenter/ESXi endpoints
 
 ## 1.19.0 - 2026-07-10
 
