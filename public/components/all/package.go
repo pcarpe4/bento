@@ -42,6 +42,7 @@ import (
 	_ "github.com/warpstreamlabs/bento/public/components/nats"
 	_ "github.com/warpstreamlabs/bento/public/components/nsq"
 	_ "github.com/warpstreamlabs/bento/public/components/opensearch"
+	_ "github.com/warpstreamlabs/bento/public/components/openshift"
 	_ "github.com/warpstreamlabs/bento/public/components/opensnowcat"
 	_ "github.com/warpstreamlabs/bento/public/components/otlp"
 	_ "github.com/warpstreamlabs/bento/public/components/prometheus"
@@ -51,6 +52,7 @@ import (
 	_ "github.com/warpstreamlabs/bento/public/components/pusher"
 	_ "github.com/warpstreamlabs/bento/public/components/python"
 	_ "github.com/warpstreamlabs/bento/public/components/questdb"
+	_ "github.com/warpstreamlabs/bento/public/components/redfish"
 	_ "github.com/warpstreamlabs/bento/public/components/redis"
 	_ "github.com/warpstreamlabs/bento/public/components/s2"
 	_ "github.com/warpstreamlabs/bento/public/components/sentry"
@@ -61,6 +63,7 @@ import (
 	_ "github.com/warpstreamlabs/bento/public/components/sql"
 	_ "github.com/warpstreamlabs/bento/public/components/statsd"
 	_ "github.com/warpstreamlabs/bento/public/components/twitter"
+	_ "github.com/warpstreamlabs/bento/public/components/vmware"
 	_ "github.com/warpstreamlabs/bento/public/components/wasm"
 	_ "github.com/warpstreamlabs/bento/public/components/zeromq"
 )

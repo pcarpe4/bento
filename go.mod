@@ -144,6 +144,7 @@ require (
 	github.com/twmb/franz-go/pkg/kmsg v1.9.0
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/vmihailenco/msgpack/v5 v5.4.1
+	github.com/vmware/govmomi v0.55.1
 	github.com/xdg-go/scram v1.1.2
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78

@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - `parse_big_decimal` bloblang method for Kafka Connect / Debezium decimal decoding @aratz-lasa
+- `openshift_oc` input component for collecting resources from OpenShift/Kubernetes clusters via the `oc` CLI
+- `vcenter` input component for collecting inventory objects from VMware vCenter/ESXi endpoints
+- `redfish` input component for collecting hardware inventory and telemetry from BMCs (Dell iDRAC, HPE iLO, Lenovo XCC and others) via the DMTF Redfish API
 
 ## 1.19.0 - 2026-07-10
 
