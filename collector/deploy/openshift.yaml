@@ -1,0 +1,81 @@
+# Example OpenShift deployment for the barebones collector.
+#
+#   oc apply -f deploy/openshift.yaml
+#
+# The config file lives in a ConfigMap and credentials in a Secret, injected
+# as environment variables that the config references via ${VAR}.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: collector-config
+data:
+  config.yaml: |
+    default_interval: 5m
+    sources:
+      - name: idrac-fleet
+        type: redfish
+        interval: 15m
+        config:
+          urls: [https://idrac-01.example.com]
+          username: svc-collector
+          password: ${IDRAC_PASSWORD}
+          insecure_skip_verify: true
+    destinations:
+      - name: inventory-db
+        type: mongodb
+        config:
+          url: ${MONGO_URL}
+          database: infra
+          collection: inventory
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: collector-credentials
+type: Opaque
+stringData:
+  IDRAC_PASSWORD: change-me
+  MONGO_URL: mongodb://mongo.example.com:27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collector
+  labels:
+    app: collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collector
+  template:
+    metadata:
+      labels:
+        app: collector
+    spec:
+      containers:
+        - name: collector
+          image: image-registry.openshift-image-registry.svc:5000/my-project/collector:latest
+          args: ["-config", "/etc/collector/config.yaml"]
+          envFrom:
+            - secretRef:
+                name: collector-credentials
+          volumeMounts:
+            - name: config
+              mountPath: /etc/collector
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: config
+          configMap:
+            name: collector-config

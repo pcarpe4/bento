@@ -1,0 +1,62 @@
+# Barebones collector configuration.
+#
+# Each entry under `sources` is a specific source: give it a name, pick a
+# registered type, optionally set an interval and target destinations, and
+# provide the type-specific config. `${VAR}` references are replaced with
+# environment variables at startup.
+
+default_interval: 5m
+
+sources:
+  - name: idrac-fleet
+    type: redfish
+    interval: 15m
+    destinations: [inventory-db]
+    config:
+      urls:
+        - https://idrac-01.example.com
+        - https://idrac-02.example.com
+      username: svc-collector
+      password: ${IDRAC_PASSWORD}
+      endpoints: [/redfish/v1/Systems]
+      insecure_skip_verify: true
+
+  - name: vcenter-prod
+    type: vcenter
+    destinations: [inventory-db]
+    config:
+      url: https://vcenter.example.com/sdk
+      username: svc-collector@vsphere.local
+      password: ${VSPHERE_PASSWORD}
+      object_types: [virtual_machine, host_system, datastore]
+
+  - name: openshift-prod-pods
+    type: oc
+    interval: 10m
+    destinations: [inventory-db]
+    config:
+      resources: [pods, deploymentconfigs]
+      namespace: production
+      server: https://api.cluster.example.com:6443
+      token: ${OCP_SA_TOKEN}
+
+  - name: some-rest-api
+    type: http_api
+    destinations: [inventory-db, debug]
+    config:
+      urls: [https://api.example.com/v1/assets]
+      headers:
+        Authorization: Bearer ${API_TOKEN}
+
+destinations:
+  - name: inventory-db
+    type: mongodb
+    config:
+      url: ${MONGO_URL}
+      database: infra
+      collection: inventory
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+
+  - name: debug
+    type: stdout
