@@ -27,6 +27,9 @@ import (
 
 	// Destinations.
 	_ "github.com/warpstreamlabs/bento/public/components/mongodb"
+
+	// Metrics: the prometheus exporter, scrapeable on /metrics.
+	_ "github.com/warpstreamlabs/bento/public/components/prometheus"
 )
 
 var (
