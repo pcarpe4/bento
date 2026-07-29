@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - `openshift_oc` input component for collecting resources from OpenShift/Kubernetes clusters via the `oc` CLI
 - `vcenter` input component for collecting inventory objects from VMware vCenter/ESXi endpoints
 - `redfish` input component for collecting hardware inventory and telemetry from BMCs (Dell iDRAC, HPE iLO, Lenovo XCC and others) via the DMTF Redfish API
+- `cmd/bento-slim` build target compiling in only infrastructure-collection components, reducing binary size roughly 3.4x versus the all-components build
 
 ## 1.19.0 - 2026-07-10
 
