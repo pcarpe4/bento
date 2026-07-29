@@ -1,9 +1,8 @@
-# Barebones Collector (Rust)
+# Barebones Collector
 
 A minimal infrastructure data collector in Rust: poll **sources** on an
 interval, write the results to **destinations**, all defined in one YAML
-file. This is a port of the Go `collector/` module with the same config
-format, extension model and OpenShift deployment story.
+file.
 
 **~9MB release binary**, 10 direct crates (tokio, reqwest with rustls,
 mongodb, serde/serde_json/serde_yaml, async-trait, anyhow, log,
@@ -25,10 +24,9 @@ nothing but libc.
 | `http_post`  | POSTs each batch as JSON to a URL  |
 | `mongodb`    | Inserts each message as a document |
 
-Note the vCenter difference from the Go version: this source uses the
-vSphere Automation **REST** API (vCenter 7.0+, base URL without `/sdk`) and
-returns the list-endpoint summaries (name, power state, moref, ...) rather
-than govmomi's deep property retrieval.
+The vCenter source uses the vSphere Automation **REST** API (vCenter 7.0+,
+base URL without `/sdk`) and returns the list-endpoint summaries (name,
+power state, moref, ...).
 
 ## Running
 
@@ -142,5 +140,5 @@ expansion. To use the `oc` source in-cluster, use an image that bundles the
 No processors/transformations, no delivery guarantees or acknowledgements,
 no buffering, no metrics endpoint — records are collected and handed to
 destinations at-most-once per poll. Failures are logged and retried on the
-next interval. When you outgrow that, use the full Bento build (or the
-`collector/` Go module's bigger sibling, `cmd/bento-slim`).
+next interval. When you outgrow that, reach for a full streaming pipeline
+tool with acknowledged delivery and transformations.
