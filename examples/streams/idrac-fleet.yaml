@@ -1,0 +1,15 @@
+input:
+  redfish:
+    urls: [https://idrac-01.example.com, https://idrac-02.example.com]
+    username: svc-collector
+    password: ${IDRAC_PASSWORD}
+    interval: 15m
+pipeline:
+  processors:
+    - select:
+        paths: [Model, Name, PowerState, Status]
+output:
+  mongodb:
+    url: ${MONGO_URL}
+    database: infra
+    collection: inventory

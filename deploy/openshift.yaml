@@ -1,0 +1,89 @@
+# Example OpenShift deployment for bento-rs in streams mode: each ConfigMap
+# key under /etc/bento/streams is an independent stream, so adding a
+# collection job is a ConfigMap edit plus `oc rollout restart`.
+#
+#   oc apply -f deploy/openshift.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bento-rs-streams
+data:
+  idrac-fleet.yaml: |
+    input:
+      redfish:
+        urls: [https://idrac-01.example.com]
+        username: svc-collector
+        password: ${IDRAC_PASSWORD}
+        interval: 15m
+    output:
+      mongodb:
+        url: ${MONGO_URL}
+        database: infra
+        collection: inventory
+  vcenter-prod.yaml: |
+    input:
+      vcenter:
+        url: https://vcenter.example.com
+        username: svc-collector@vsphere.local
+        password: ${VSPHERE_PASSWORD}
+        object_types: [virtual_machine, host_system]
+        insecure_skip_verify: true
+        interval: 5m
+    output:
+      mongodb:
+        url: ${MONGO_URL}
+        database: infra
+        collection: inventory
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bento-rs-credentials
+type: Opaque
+stringData:
+  IDRAC_PASSWORD: change-me
+  VSPHERE_PASSWORD: change-me
+  MONGO_URL: mongodb://mongo.example.com:27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bento-rs
+  labels:
+    app: bento-rs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bento-rs
+  template:
+    metadata:
+      labels:
+        app: bento-rs
+    spec:
+      containers:
+        - name: bento-rs
+          image: image-registry.openshift-image-registry.svc:5000/my-project/bento-rs:latest
+          args: ["streams", "/etc/bento/streams"]
+          envFrom:
+            - secretRef:
+                name: bento-rs-credentials
+          volumeMounts:
+            - name: streams
+              mountPath: /etc/bento/streams
+              readOnly: true
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: streams
+          configMap:
+            name: bento-rs-streams

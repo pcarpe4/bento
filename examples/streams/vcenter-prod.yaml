@@ -1,0 +1,13 @@
+input:
+  vcenter:
+    url: https://vcenter.example.com
+    username: svc-collector@vsphere.local
+    password: ${VSPHERE_PASSWORD}
+    object_types: [virtual_machine, host_system, datastore]
+    insecure_skip_verify: true
+    interval: 5m
+output:
+  mongodb:
+    url: ${MONGO_URL}
+    database: infra
+    collection: inventory
